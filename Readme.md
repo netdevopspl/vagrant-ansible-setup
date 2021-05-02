@@ -39,9 +39,10 @@ Uruchomienie środowiska odbywa się w dwóch krokach:
 
 ## **WYMAGANIA**
 
-1. Zainstalowany Virtualbox
-2. Zainstalowany Vagrant
-3. (opcjonalnie) Zainstalowany Git
+1. Zainstalowany [Virtualbox](https://www.virtualbox.org/)
+2. Zainstalowany [Vagrant](https://www.vagrantup.com/)
+3. (opcjonalnie) Zainstalowany [Git](https://git-scm.com/download/win)
+4. Dostęp do Internetu dla maszyn wirtualnych (adresy IP przydzielane są DHCP lokalnej sieci)
 
 ## OGRANICZENIA
 
