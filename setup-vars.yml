@@ -1,0 +1,6 @@
+---
+devops_user: devops
+devops_pass: devops
+devops_home: '/home/devops'
+devops_pubkey_file: '{{ devops_home }}/.ssh/id_rsa.pub'
+devops_prvkey_file: '{{ devops_home }}/.ssh/id_rsa'

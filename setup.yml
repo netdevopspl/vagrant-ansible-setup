@@ -1,0 +1,137 @@
+---
+- name: Setup local environment
+  hosts: localhost
+  become: true
+  become_user: root
+  vars_files:
+    - setup-vars.yml
+
+  tasks:
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+      register: result
+      failed_when: "result.reboot_required|bool == true"
+      ignore_errors: true
+
+    - name: Create local user
+      user:
+        name: "{{ devops_user }}"
+        password: "{{ devops_pass | password_hash('sha512') }}"
+        comment: 'Ansible user'
+        state: present
+        groups: users
+        append: true
+        create_home: true
+        shell: /bin/bash
+        generate_ssh_key: true
+        ssh_key_bits: 4096
+        ssh_key_comment: 'devops@dev.local'
+        update_password: on_create
+
+    # We are unable to read other user's public and private key directly
+    - name: Slurp public key from devops home dir
+      slurp:
+        src: "{{ devops_pubkey_file }}"
+      register: pubkey
+
+    - name: Create permanent variable for public key
+      set_fact:
+        publickey="{{ pubkey.content | b64decode }}"
+
+    - name: Slurp private key from devops home dir
+      slurp:
+        src: "{{ devops_prvkey_file }}"
+      register: prvkey
+
+    - name: Create permanent variable for public key
+      set_fact:
+        privatekey="{{ prvkey.content | b64decode }}"
+
+#    - name: Debug message
+#      debug:
+#        msg: '{{ pubkey }}'
+
+    - name: Set authorized key for local user
+      authorized_key:
+        user: "{{ devops_user }}"
+        state: present
+        key: "{{ publickey }}"
+
+    - name: Copy sudoers file
+      copy:
+        dest: "/etc/sudoers.d/devops"
+        content: "devops  ALL=(ALL)  NOPASSWD: ALL"
+        validate: '/usr/sbin/visudo -cf %s'
+
+- name: Setup remote hosts
+  hosts: centos
+  become: true
+  vars_files:
+    - setup-vars.yml
+
+  tasks:
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+      register: result
+      failed_when: "result.reboot_required|bool == true"
+      ignore_errors: true
+
+    - name: Create remote user
+      user:
+        name: "{{ devops_user }}"
+        password: "{{ devops_pass | password_hash('sha512') }}"
+        comment: 'Ansible user'
+        state: present
+        groups: users
+        append: true
+        create_home: true
+        shell: /bin/bash
+        update_password: on_create
+
+    - name: Create .ssh directory
+      file:
+        path: "{{ devops_home }}/.ssh"
+        state: directory
+        mode: 0700
+        owner: "{{ devops_user }}"
+        group: "{{ devops_user }}"
+
+    - name: Set authorized key for local user
+      authorized_key:
+        user: "{{ devops_user }}"
+        state: present
+        key: "{{ hostvars['localhost']['publickey'] }}"
+
+    - name: Copy public key to remote host
+      copy:
+        dest: "{{ devops_pubkey_file }}"
+        content: "{{ hostvars['localhost']['publickey'] }}"
+
+    - name: Fix permission for public key file
+      file:
+        path: "{{ devops_pubkey_file }}"
+        owner: "{{ devops_user }}"
+        group: "{{ devops_user }}"
+        mode: '0644'
+        state: file
+
+    - name: Copy private key to remote host
+      copy:
+        dest: "{{ devops_prvkey_file }}"
+        content: "{{ hostvars['localhost']['privatekey'] }}"
+
+    - name: Fix permission for private key file
+      file:
+        path: "{{ devops_prvkey_file }}"
+        owner: "{{ devops_user }}"
+        group: "{{ devops_user }}"
+        mode: '0600'
+        state: file
+
+    - name: Copy sudoers file
+      copy:
+        dest: "/etc/sudoers.d/devops"
+        content: "devops  ALL=(ALL)  NOPASSWD: ALL"
+        validate: '/usr/sbin/visudo -cf %s'
