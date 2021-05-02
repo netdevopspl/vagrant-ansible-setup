@@ -12,6 +12,8 @@ Jest to przykład bazowej konfiguracji środowiska trzech hostów, uruchomionych
 5. Sklonuj poniższe repozytorium za pomocą polecenia:
    - `git clone git@github.com:netdevopspl/securecrt-runcommands.git`
 6. Otwórz plik inventory i ustaw odpowiednie zmienne
+7. Uruchom playbook za pomocą polecenia:
+   - `ansible-playbook setup.yml`
 
 ## **WYMAGANIA**
 
@@ -20,7 +22,7 @@ Jest to przykład bazowej konfiguracji środowiska trzech hostów, uruchomionych
 
 ## **KONTAKT**
 
-E-mail: [krzysztof@nowoczesnysieciowiec.pl](mailto:krzysztof@nowoczesnysieciowiec.pl?Subject=Projekt%20RunAndCompareCommands)
+E-mail: [krzysztof@nowoczesnysieciowiec.pl](mailto:krzysztof@nowoczesnysieciowiec.pl?Subject=Projekt%20VagrantAnsibleSetup)
 
 ## **LICENCJA**
 
