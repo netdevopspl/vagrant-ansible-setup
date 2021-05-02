@@ -2,6 +2,8 @@
 # vi: set ft=ruby :
 
 ETH_DEV = "Intel(R) Dual Band Wireless-AC 8265"
+
+# DO NOT EDIT
 BOX_IMAGE = "centos/8"
 BOX_VERSION = "2011.0"
 
@@ -16,9 +18,6 @@ Vagrant.configure("2") do |config|
       vb.name = "cicd"
       vb.cpus = 1
       vb.memory = 1024
-    end
-    cicd.vm.provision "ansible" do |ansible|
-      ansible.playbook = "init.yml"
     end
     cicd.vm.provision "shell", inline: <<-SHELL
       sudo yum install -y epel-release
