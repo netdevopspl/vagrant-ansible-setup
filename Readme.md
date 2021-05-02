@@ -18,24 +18,28 @@ Uruchomienie środowiska odbywa się w dwóch krokach:
    - `ETH_DEV` - do którego interfejsu ma być przypisany interfejs `eth1` hostów
    - Lista interfejsów: `c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" list bridgedifs`
 3. Uruchom `vagrant up`
-4. Zaloguj się za pomocą SSH do każdego hosta (*cicd*, *node1*, *node2*), jako *vagrant/vagrant*, używając polecenia:
+4. Zaloguj się za pomocą SSH do każdego hosta (*cicd*, *node1*, *node2*), używając polecenia:
    - `vagrant ssh <host>`
 5. Pozyskaj adres IP interfejsu `eth1` za pomocą polecenia:
    - `ip addr`
 
 **Krok 2:**
 
-1. Zaloguj się za pomocą SSH do hosta *cicd*, jako *vagrant/vagrant*, używając polecenia:
+1. Zaloguj się za pomocą SSH do hosta *cicd* używając polecenia:
    - `vagrant ssh cicd`
 2. Sklonuj poniższe repozytorium za pomocą polecenia:
-   - `git clone git@github.com:netdevopspl/securecrt-runcommands.git`
+   - `git clone https://github.com/netdevopspl/vagrant-ansible-setup.git`
 3. Otwórz plik inventory i ustaw odpowiednie zmienne (adresy IP)
 4. Uruchom playbook za pomocą polecenia:
    - `ansible-playbook setup.yml`
-5. Zaloguj się za pomocą SSH do hosta *cicd*, jako użytkownik *devops/devops*, najlepiej już za pomocą lepszego terminala
-6. Powinieneś mieć dostęp do wszystkich hostów za pomocą klucza SSH
-7. Można rozpocząć zabawę z Ansible
-    - Używaj konta *devops/devops*
+5. Zaloguj się za pomocą SSH do każdego hosta (*cicd*, *node1*, *node2*), używając polecenia:
+   - `vagrant ssh <host>`
+6. Zrestartuj maszynę wirtualną (ansible wyłącza na hostach SELinux, a to wymaga restartu)
+   - `sudo reload`
+7. Zaloguj się za pomocą SSH do hosta *cicd*, jako użytkownik *devops/devops* (za pomocą putty/securecrt/itp)
+8. Powinieneś mieć dostęp do wszystkich hostów za pomocą klucza SSH
+9. Można rozpocząć zabawę z Ansible
+   - Używaj konta *devops/devops*
 
 ## **WYMAGANIA**
 
@@ -47,6 +51,8 @@ Uruchomienie środowiska odbywa się w dwóch krokach:
 ## OGRANICZENIA
 
 Vagrant powołuje trzy hosty Linux Centos. Jeżeli dystrybucja zostanie zmieniona na inną, to konieczna będzie modyfikacja Vagrantfile, a dokładnie początkowego provision za pomocą `shell` - zamiana `yum` na `apt-get`
+
+Ansible wyłącza na hostach SELinux, co wymaga później restartu
 
 ## TODO
 
