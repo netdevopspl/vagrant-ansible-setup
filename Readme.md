@@ -2,7 +2,7 @@
 
 ## OPIS
 
-Jest to przykład bazowej konfiguracji środowiska trzech hostów, uruchomionych za pomocą Vagrant/Virtualbox. Idea jest taka, żeby skonfigurować automatycznie odpowiednich użytkowników i skopiować na wszystkie hosty klucz SSH.
+Jest to przykład bazowej konfiguracji środowiska trzech hostów, uruchomionych za pomocą Vagrant/Virtualbox. Idea jest taka, żeby (jako ćwiczenie) skonfigurować automatycznie dedykowanego użytkownika (*devops*) i skopiować na wszystkie hosty jego klucz SSH. Założenie jest takie, żeby nie korzystać z wbudowanego konta *vagrant*, a tylko użyć go do początkowej komunikacji (ansible) z innymi hostami (klucze SSH dla użytkownika *vagrant* są wgrane fabrycznie w obraz).
 
 Uruchomienie środowiska odbywa się w dwóch krokach:
 
